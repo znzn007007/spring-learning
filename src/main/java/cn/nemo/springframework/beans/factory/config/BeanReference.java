@@ -1,6 +1,8 @@
 package cn.nemo.springframework.beans.factory.config;
 
 /**
+ * bean的引用信息
+ *
  * @author zkl
  */
 public class BeanReference {

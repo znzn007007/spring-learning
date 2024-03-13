@@ -28,7 +28,6 @@ public class APITest {
 
 		UserService userService = (UserService) factory.getBean("userService");
 		userService.queryUserInfo("10001");
-
 	}
 
 	@Test

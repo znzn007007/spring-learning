@@ -9,4 +9,7 @@
         <property name="userDao" ref="userDao"/>
     </bean>
 
+    <bean class="cn.nemo.springframework.beans.MyBeanPostProcessor"/>
+    <bean class="cn.nemo.springframework.beans.MyBeanFactoryPostProcessor"/>
+
 </beans>
