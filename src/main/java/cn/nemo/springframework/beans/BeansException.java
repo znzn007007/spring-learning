@@ -3,7 +3,7 @@ package cn.nemo.springframework.beans;
 /**
  * @author zkl
  */
-public class BeansException extends Exception {
+public class BeansException extends RuntimeException {
 	public BeansException(String message) {
 		super(message);
 	}

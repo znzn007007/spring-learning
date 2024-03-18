@@ -1,9 +1,12 @@
 package cn.nemo.springframework.beans;
 
+import cn.nemo.springframework.beans.factory.DisposableBean;
+import cn.nemo.springframework.beans.factory.InitializingBean;
+
 /**
  * @author zkl
  */
-public class UserService {
+public class UserService implements InitializingBean, DisposableBean {
 
 
 	private String company;
@@ -37,5 +40,21 @@ public class UserService {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	/**
+	 * Bean 销毁调用
+	 */
+	@Override
+	public void destroy() throws Exception {
+		System.out.println("执行：UserService.destroy");
+	}
+
+	/**
+	 * Bean 处理了属性填充后调用
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("执行：UserService.afterPropertiesSet");
 	}
 }

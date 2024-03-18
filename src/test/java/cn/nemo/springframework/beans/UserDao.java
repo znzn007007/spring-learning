@@ -9,10 +9,16 @@ import java.util.Map;
 public class UserDao {
 	private static Map<String, String> hashMap = new HashMap<>();
 
-	static {
+	public void initDataMethod() {
+		System.out.println("执行：init-method");
 		hashMap.put("10001", "aaa");
 		hashMap.put("10002", "bbb");
 		hashMap.put("10003", "ccc");
+	}
+
+	public void destroyDataMethod() {
+		System.out.println("执行：destroy-method");
+		hashMap.clear();
 	}
 
 	public String queryUserName(String uId) {

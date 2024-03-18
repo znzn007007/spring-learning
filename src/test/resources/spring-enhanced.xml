@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
 
-    <bean id="userDao" class="cn.nemo.springframework.beans.UserDao"/>
+    <bean id="userDao" class="cn.nemo.springframework.beans.UserDao" init-method="initDataMethod"
+          destroy-method="destroyDataMethod"/>
 
     <bean id="userService" class="cn.nemo.springframework.beans.UserService">
         <property name="company" value="腾讯"/>

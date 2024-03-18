@@ -9,11 +9,17 @@ import net.sf.cglib.proxy.NoOp;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @author zkl
  */
 public class APITest {
+
+	@Test
+	void t1() throws NoSuchMethodException {
+		Method aa = UserService.class.getMethod("aa");
+	}
 
 	@Test
 	void test() throws BeansException {
