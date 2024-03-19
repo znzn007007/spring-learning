@@ -14,7 +14,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 
 	private String company;
 	private String location;
-	private UserDao userDao;
+	private IUserDao userDao;
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
@@ -47,7 +47,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 	public UserService() {
 	}
 
-	public UserService(UserDao userDao) {
+	public UserService(IUserDao userDao) {
 		this.userDao = userDao;
 	}
 

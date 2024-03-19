@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="userDao" class="cn.nemo.springframework.beans.ProxyBeanFactory"/>
+
+    <bean id="userService" class="cn.nemo.springframework.beans.UserService" scope="prototype">
+        <property name="company" value="腾讯"/>
+        <property name="location" value="深圳"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+</beans>

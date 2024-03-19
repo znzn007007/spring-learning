@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
 	implementation('cglib:cglib:3.3.0')
+	implementation('org.openjdk.jol:jol-cli:0.14')
 	implementation('cn.hutool:hutool-all:5.8.26')
 
     testImplementation platform('org.junit:junit-bom:5.9.1')

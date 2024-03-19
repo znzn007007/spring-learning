@@ -1,6 +1,7 @@
 package cn.nemo.springframework.beans.factory.support;
 
 import cn.nemo.springframework.beans.BeansException;
+import cn.nemo.springframework.beans.factory.FactoryBean;
 import cn.nemo.springframework.beans.factory.config.BeanDefinition;
 import cn.nemo.springframework.beans.factory.config.BeanPostProcessor;
 import cn.nemo.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * @author zkl
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
 	/**
 	 * ClassLoader to resolve bean class names with, if necessary
@@ -22,7 +23,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 	/**
 	 * BeanPostProcessors to apply in createBean
 	 */
-	private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
+	private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
 	@Override
 	public Object getBean(String name) throws BeansException {
@@ -39,13 +40,27 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 		return (T) getBean(name);
 	}
 
-	private Object doGetBean(String name, Object[] args) throws BeansException {
+	private <T> T doGetBean(String name, Object[] args) throws BeansException {
 		Object bean = getSingleton(name);
 		if (bean != null) {
-			return bean;
+			// 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+			return (T) getObjectForBeanInstance(bean, name);
 		}
 		BeanDefinition beanDefinition = getBeanDefinition(name);
-		return createBean(name, beanDefinition, args);
+		bean = createBean(name, beanDefinition, args);
+		return (T) getObjectForBeanInstance(bean, name);
+	}
+
+	private Object getObjectForBeanInstance(Object bean, String name) {
+		Object result = bean;
+		if (bean instanceof FactoryBean<?>) {
+			result = getCachedObjectForFactoryBean(name);
+			if (result == null) {
+				FactoryBean<?> factoryBean = (FactoryBean<?>) bean;
+				result = getObjectFromFactoryBean(factoryBean, name);
+			}
+		}
+		return result;
 	}
 
 	protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;

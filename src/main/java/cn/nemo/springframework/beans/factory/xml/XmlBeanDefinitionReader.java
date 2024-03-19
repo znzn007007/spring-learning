@@ -68,7 +68,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node item = childNodes.item(i);
-			if (item instanceof Element bean && "bean".equals(item.getNodeName())) {
+			if (item instanceof Element && "bean".equals(item.getNodeName())) {
+				Element bean = (Element) item;
 				// 获取 Class
 				Class<?> clazz = Class.forName(bean.getAttribute("class"));
 				String beanName = generateBeanName(bean, clazz);
@@ -98,10 +99,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		BeanDefinition beanDefinition = new BeanDefinition(clazz);
 		beanDefinition.setInitMethodName(bean.getAttribute("init-method"));
 		beanDefinition.setDestroyMethodName(bean.getAttribute("destroy-method"));
+		beanDefinition.setScope(bean.getAttribute("scope"));
 		// 读取属性并填充
 		for (int j = 0; j < bean.getChildNodes().getLength(); j++) {
 			Node node = bean.getChildNodes().item(j);
-			if (node instanceof Element property && "property".equals(node.getNodeName())) {
+			if (node instanceof Element && "property".equals(node.getNodeName())) {
+				Element property = (Element) node;
 				// 解析标签：property
 				String attrName = property.getAttribute("name");
 				String attrValue = property.getAttribute("value");
