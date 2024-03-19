@@ -47,5 +47,8 @@ public class ContextProcessTest {
 		UserService userService = applicationContext.getBean("userService", UserService.class);
 		String result = userService.queryUserInfo("10001");
 		System.out.println("测试结果：" + result);
+
+		System.out.println("ApplicationContextAware：" + userService.getApplicationContext());
+		System.out.println("BeanFactoryAware：" + userService.getBeanFactory());
 	}
 }

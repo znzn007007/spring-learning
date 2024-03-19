@@ -1,5 +1,7 @@
 package cn.nemo.springframework.core.io;
 
+import cn.nemo.springframework.util.ClassUtils;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +20,7 @@ public class ClassPathResource implements Resource {
 
 	public ClassPathResource(String path, ClassLoader classLoader) {
 		this.path = path;
-		this.classLoader = (classLoader != null ? classLoader : Thread.currentThread().getContextClassLoader());
+		this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
 	}
 
 	@Override

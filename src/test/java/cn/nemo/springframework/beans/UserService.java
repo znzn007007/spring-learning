@@ -1,19 +1,48 @@
 package cn.nemo.springframework.beans;
 
-import cn.nemo.springframework.beans.factory.DisposableBean;
-import cn.nemo.springframework.beans.factory.InitializingBean;
+import cn.nemo.springframework.beans.factory.*;
+import cn.nemo.springframework.context.ApplicationContext;
 
 /**
  * @author zkl
  */
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
+
+	private ApplicationContext applicationContext;
+	private BeanFactory beanFactory;
 
 	private String company;
-
 	private String location;
-
 	private UserDao userDao;
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+	public BeanFactory getBeanFactory() {
+		return beanFactory;
+	}
+
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
+
+	@Override
+	public void setBeanName(String name) {
+		System.out.println("Bean Name is：" + name);
+	}
+
+	@Override
+	public void setBeanClassLoader(ClassLoader classLoader) {
+		System.out.println("ClassLoader：" + classLoader);
+	}
 
 	public UserService() {
 	}
