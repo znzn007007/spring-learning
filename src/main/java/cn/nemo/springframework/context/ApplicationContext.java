@@ -7,5 +7,5 @@ import cn.nemo.springframework.beans.factory.ListableBeanFactory;
  *
  * @author zkl
  */
-public interface ApplicationContext extends ListableBeanFactory {
+public interface ApplicationContext extends ListableBeanFactory, ApplicationEventPublisher {
 }

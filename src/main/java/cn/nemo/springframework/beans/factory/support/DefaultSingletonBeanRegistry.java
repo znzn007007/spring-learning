@@ -28,6 +28,11 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 	}
 
 	@Override
+	public void registerSingleton(String beanName, Object singletonObject) {
+		singletonObjects.put(beanName, singletonObject);
+	}
+
+	@Override
 	public void destroySingletons() {
 		Set<String> keySet = this.disposableBeans.keySet();
 		Object[] disposableBeanNames = keySet.toArray();
