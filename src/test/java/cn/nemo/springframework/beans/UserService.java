@@ -51,6 +51,8 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 		this.userDao = userDao;
 	}
 
+	public void queryUserInfo() {}
+
 	public String queryUserInfo(String uid) {
 		return userDao.queryUserName(uid) + ", 公司：" + company + ", 地点" + location;
 	}
