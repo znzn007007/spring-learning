@@ -2,6 +2,7 @@ package cn.nemo.springframework.beans;
 
 import cn.nemo.springframework.beans.factory.*;
 import cn.nemo.springframework.context.ApplicationContext;
+import cn.nemo.springframework.context.ApplicationContextAware;
 
 /**
  * @author zkl

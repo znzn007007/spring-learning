@@ -1,7 +1,7 @@
-package cn.nemo.springframework.beans.factory;
+package cn.nemo.springframework.context;
 
 import cn.nemo.springframework.beans.BeansException;
-import cn.nemo.springframework.context.ApplicationContext;
+import cn.nemo.springframework.beans.factory.Aware;
 
 /**
  * 实现此接口，既能感知到所属的 ApplicationContext

@@ -1,9 +1,9 @@
 package cn.nemo.springframework.beans.factory.support;
 
 import cn.nemo.springframework.beans.BeansException;
-import cn.nemo.springframework.beans.factory.ApplicationContextAware;
 import cn.nemo.springframework.beans.factory.config.BeanPostProcessor;
 import cn.nemo.springframework.context.ApplicationContext;
+import cn.nemo.springframework.context.ApplicationContextAware;
 
 /**
  * @author zkl

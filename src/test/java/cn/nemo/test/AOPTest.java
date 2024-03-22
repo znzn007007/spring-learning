@@ -1,10 +1,14 @@
 package cn.nemo.test;
 
+import cn.nemo.springframework.ProxyFactory;
 import cn.nemo.springframework.aop.*;
 import cn.nemo.springframework.aop.aspectj.AspectJExpressionPointcut;
+import cn.nemo.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import cn.nemo.springframework.aop.framework.CglibAopProxy;
 import cn.nemo.springframework.aop.framework.JdkDynamicAopProxy;
 import cn.nemo.springframework.aop.framework.ReflectiveMethodInvocation;
+import cn.nemo.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor;
+import cn.nemo.springframework.context.support.ClassPathXmlApplicationContext;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +21,53 @@ import java.lang.reflect.Proxy;
  * @author zkl
  */
 public class AOPTest {
+
+	@Test
+	public void test_xml() {
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-aop.xml");
+		IUserService userService = applicationContext.getBean("userService", IUserService.class);
+		System.out.println("测试结果：" + userService.queryUserInfo());
+	}
+
+	@Test
+	public void test_beforeAdvice() {
+
+		IUserService userService = new UserService();
+		// 组装代理信息
+		AdvisedSupport advisedSupport = new AdvisedSupport();
+		advisedSupport.setTargetSource(new TargetSource(userService));
+		advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.nemo.springframework.aop.IUserService.*(..))"));
+		UserServiceBeforeAdvice beforeAdvice = new UserServiceBeforeAdvice();
+		MethodBeforeAdviceInterceptor interceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
+		advisedSupport.setMethodInterceptor(interceptor);
+
+		IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+		System.out.println("测试结果：" + proxy.queryUserInfo());
+	}
+
+	@Test
+	public void test_advisor() {
+		// 目标对象
+		IUserService userService = new UserService();
+
+		AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+		advisor.setExpression("execution(* cn.nemo.springframework.aop.IUserService.*(..))");
+		advisor.setAdvice(new MethodBeforeAdviceInterceptor(new UserServiceBeforeAdvice()));
+
+		ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+		if (classFilter.matches(userService.getClass())) {
+			AdvisedSupport advisedSupport = new AdvisedSupport();
+
+			TargetSource targetSource = new TargetSource(userService);
+			advisedSupport.setTargetSource(targetSource);
+			advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+			advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+			advisedSupport.setProxyTargetClass(true); // false/true，JDK动态代理、CGlib动态代理
+
+			IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+			System.out.println("测试结果：" + proxy.queryUserInfo());
+		}
+	}
 
 	@Test
 	void test_dynamic() {

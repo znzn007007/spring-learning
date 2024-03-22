@@ -6,10 +6,7 @@ import cn.nemo.springframework.beans.BeansException;
 import cn.nemo.springframework.beans.PropertyValue;
 import cn.nemo.springframework.beans.PropertyValues;
 import cn.nemo.springframework.beans.factory.*;
-import cn.nemo.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import cn.nemo.springframework.beans.factory.config.BeanDefinition;
-import cn.nemo.springframework.beans.factory.config.BeanPostProcessor;
-import cn.nemo.springframework.beans.factory.config.BeanReference;
+import cn.nemo.springframework.beans.factory.config.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -25,12 +22,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
 		Object bean = null;
 		try {
+			// 判断是否返回代理 Bean 对象
+			bean = resolveBeforeInstantiation(beanName, beanDefinition);
+			if (null != bean) {
+				return bean;
+			}
+
 			bean = createBeanInstance(beanName, beanDefinition, args);
 			applyPropertyValues(beanName, bean, beanDefinition);
 			// 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
 			bean = initializeBean(beanName, bean, beanDefinition);
 		} catch (BeansException e) {
-			throw new BeansException("Instantiation of bean failed", e);
+			throw new BeansException("Instantiation of bean failed: " + beanName, e);
 		}
 		// 注册实现了 DisposableBean 接口的 Bean 对象
 		registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
@@ -39,6 +42,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			addSingleton(beanName, bean);
 		}
 		return bean;
+	}
+
+	private Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+		Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+		if (null != bean) {
+			bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+		}
+		return bean;
+	}
+
+	private Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			if (processor instanceof InstantiationAwareBeanPostProcessor) {
+				return ((InstantiationAwareBeanPostProcessor) processor).postProcessBeforeInstantiation(beanClass, beanName);
+			}
+		}
+		return null;
 	}
 
 	private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
@@ -147,7 +167,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				BeanUtil.setFieldValue(bean, name, value);
 			}
 		} catch (Exception e) {
-			throw new BeansException("Error setting property values：" + beanName);
+			throw new BeansException("Error setting property values：" + beanName, e);
 		}
 	}
 
