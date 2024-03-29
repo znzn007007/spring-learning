@@ -1,5 +1,6 @@
 package cn.nemo.springframework.beans;
 
+import cn.nemo.springframework.IUserDao;
 import cn.nemo.springframework.beans.factory.FactoryBean;
 
 import java.lang.reflect.InvocationHandler;

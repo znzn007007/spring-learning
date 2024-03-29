@@ -1,4 +1,4 @@
-package cn.nemo.springframework.aop;
+package cn.nemo.springframework;
 
 public interface IUserService {
 

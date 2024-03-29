@@ -12,7 +12,7 @@
     </bean>
 
     <bean id="pointcutAdvisor" class="cn.nemo.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
-        <property name="expression" value="execution(* cn.nemo.springframework.aop.IUserService.*(..))"/>
+        <property name="expression" value="execution(* cn.nemo.springframework.IUserService.*(..))"/>
         <property name="advice" ref="methodInterceptor"/>
     </bean>
 

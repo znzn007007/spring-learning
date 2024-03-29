@@ -1,5 +1,6 @@
 package cn.nemo.test;
 
+import cn.nemo.springframework.IUserService;
 import cn.nemo.springframework.ProxyFactory;
 import cn.nemo.springframework.aop.*;
 import cn.nemo.springframework.aop.aspectj.AspectJExpressionPointcut;
@@ -36,7 +37,7 @@ public class AOPTest {
 		// 组装代理信息
 		AdvisedSupport advisedSupport = new AdvisedSupport();
 		advisedSupport.setTargetSource(new TargetSource(userService));
-		advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.nemo.springframework.aop.IUserService.*(..))"));
+		advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.nemo.springframework.IUserService.*(..))"));
 		UserServiceBeforeAdvice beforeAdvice = new UserServiceBeforeAdvice();
 		MethodBeforeAdviceInterceptor interceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
 		advisedSupport.setMethodInterceptor(interceptor);
@@ -51,7 +52,7 @@ public class AOPTest {
 		IUserService userService = new UserService();
 
 		AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
-		advisor.setExpression("execution(* cn.nemo.springframework.aop.IUserService.*(..))");
+		advisor.setExpression("execution(* cn.nemo.springframework.IUserService.*(..))");
 		advisor.setAdvice(new MethodBeforeAdviceInterceptor(new UserServiceBeforeAdvice()));
 
 		ClassFilter classFilter = advisor.getPointcut().getClassFilter();
@@ -76,7 +77,7 @@ public class AOPTest {
 		AdvisedSupport advisedSupport = new AdvisedSupport();
 		advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
 		advisedSupport.setTargetSource(new TargetSource(service));
-		advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.nemo.springframework.aop.IUserService.*(..))"));
+		advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* cn.nemo.springframework.IUserService.*(..))"));
 
 		// 代理对象(JdkDynamicAopProxy)
 		IUserService proxy_jdk = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
@@ -109,7 +110,7 @@ public class AOPTest {
 		IUserService proxy = (IUserService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
 				targetObj.getClass().getInterfaces(), new InvocationHandler() {
 					// 方法匹配器
-					MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* cn.nemo.springframework.aop.IUserService.*(..))");
+					MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* cn.nemo.springframework.IUserService.*(..))");
 
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

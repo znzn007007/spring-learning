@@ -1,4 +1,4 @@
-package cn.nemo.springframework.beans;
+package cn.nemo.springframework;
 
 /**
  * @author zkl
