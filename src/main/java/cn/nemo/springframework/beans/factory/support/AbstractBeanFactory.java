@@ -6,6 +6,7 @@ import cn.nemo.springframework.beans.factory.config.BeanDefinition;
 import cn.nemo.springframework.beans.factory.config.BeanPostProcessor;
 import cn.nemo.springframework.beans.factory.config.ConfigurableBeanFactory;
 import cn.nemo.springframework.util.ClassUtils;
+import cn.nemo.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * BeanPostProcessors to apply in createBean
 	 */
 	private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+	/**
+	 * String resolvers to apply e.g. to annotation attribute values
+	 */
+	private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<>();
 
 	@Override
 	public Object getBean(String name) throws BeansException {
@@ -83,5 +89,19 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	public ClassLoader getBeanClassLoader() {
 		return this.beanClassLoader;
+	}
+
+	@Override
+	public void addEmbeddedValueResolver(StringValueResolver valueResolver) {
+		this.embeddedValueResolvers.add(valueResolver);
+	}
+
+	@Override
+	public String resolveEmbeddedValue(String value) {
+		String result = value;
+		for (StringValueResolver resolver : this.embeddedValueResolvers) {
+			result = resolver.resolveStringValue(result);
+		}
+		return result;
 	}
 }

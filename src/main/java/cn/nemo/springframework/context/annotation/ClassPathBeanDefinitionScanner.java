@@ -1,6 +1,7 @@
 package cn.nemo.springframework.context.annotation;
 
 import cn.hutool.core.util.StrUtil;
+import cn.nemo.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import cn.nemo.springframework.beans.factory.config.BeanDefinition;
 import cn.nemo.springframework.beans.factory.support.BeanDefinitionRegistry;
 
@@ -26,6 +27,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				registry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
 			}
 		}
+
+		registry.registerBeanDefinition("cn.nemo.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor", new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
 	}
 
 	private String determineBeanName(BeanDefinition beanDefinition) {

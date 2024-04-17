@@ -4,6 +4,7 @@ import cn.nemo.springframework.ProxyFactory;
 import cn.nemo.springframework.aop.*;
 import cn.nemo.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import cn.nemo.springframework.beans.BeansException;
+import cn.nemo.springframework.beans.PropertyValues;
 import cn.nemo.springframework.beans.factory.BeanFactory;
 import cn.nemo.springframework.beans.factory.BeanFactoryAware;
 import cn.nemo.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -74,6 +75,29 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 			advisedSupport.setProxyTargetClass(false);
 			return new ProxyFactory(advisedSupport).getProxy();
 		}
+		return null;
+	}
+
+	@Override
+	public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+		return false;
+	}
+
+	/**
+	 * Post-process the given property values before the factory applies them
+	 * to the given bean. Allows for checking whether all dependencies have been
+	 * satisfied, for example based on a "Required" annotation on bean property setters.
+	 * <p>
+	 * 在 Bean 对象实例化完成后，设置属性操作之前执行此方法
+	 *
+	 * @param pvs
+	 * @param bean
+	 * @param beanName
+	 * @return
+	 * @throws BeansException
+	 */
+	@Override
+	public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) throws BeansException {
 		return null;
 	}
 
