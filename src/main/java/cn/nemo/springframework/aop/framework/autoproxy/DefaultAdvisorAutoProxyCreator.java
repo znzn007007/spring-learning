@@ -45,12 +45,8 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		return bean;
-	}
 
-	@Override
-	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-
+		Class<?> beanClass = bean.getClass();
 		if (isInfrastructureClass(beanClass)) {
 			return null;
 		}
@@ -75,6 +71,11 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 			advisedSupport.setProxyTargetClass(false);
 			return new ProxyFactory(advisedSupport).getProxy();
 		}
+		return bean;
+	}
+
+	@Override
+	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		return null;
 	}
 

@@ -11,83 +11,88 @@ import cn.nemo.springframework.context.ApplicationContextAware;
 public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
 
-	private ApplicationContext applicationContext;
-	private BeanFactory beanFactory;
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
 
-	private String company;
-	private String location;
-	private IUserDao userDao;
+    private String company;
+    private String location;
+    private UserDao userDao;
 
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
-	public BeanFactory getBeanFactory() {
-		return beanFactory;
-	}
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
 
-	@Override
-	public void setBeanName(String name) {
-		System.out.println("Bean Name is：" + name);
-	}
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("Bean Name is：" + name);
+    }
 
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		System.out.println("ClassLoader：" + classLoader);
-	}
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("ClassLoader：" + classLoader);
+    }
 
-	public UserService() {
-	}
+    public UserService() {
+    }
 
-	public UserService(IUserDao userDao) {
-		this.userDao = userDao;
-	}
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
-	public void queryUserInfo() {}
+    public UserService(String company) {
+        this.company = company;
+    }
 
-	public String queryUserInfo(String uid) {
-		return userDao.queryUserName(uid) + ", 公司：" + company + ", 地点" + location;
-	}
+    public void queryUserInfo() {
+    }
 
-	public String getCompany() {
-		return company;
-	}
+    public String queryUserInfo(String uid) {
+        return userDao.queryUserName(uid) + ", 公司：" + company + ", 地点" + location;
+    }
 
-	public void setCompany(String company) {
-		this.company = company;
-	}
+    public String getCompany() {
+        return company;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+    public String getLocation() {
+        return location;
+    }
 
-	/**
-	 * Bean 销毁调用
-	 */
-	@Override
-	public void destroy() throws Exception {
-		System.out.println("执行：UserService.destroy");
-	}
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-	/**
-	 * Bean 处理了属性填充后调用
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		System.out.println("执行：UserService.afterPropertiesSet");
-	}
+    /**
+     * Bean 销毁调用
+     */
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("执行：UserService.destroy");
+    }
+
+    /**
+     * Bean 处理了属性填充后调用
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("执行：UserService.afterPropertiesSet");
+    }
 }
