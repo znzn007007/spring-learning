@@ -29,6 +29,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 
 			bean = createBeanInstance(beanName, beanDefinition, args);
+
+			// 处理循环依赖，将实例化后的Bean对象提前放入缓存中暴露出来
+			if (beanDefinition.isSingleton()) {
+				Object finalBean = bean;
+				addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, beanDefinition, finalBean));
+			}
+			// 实例化后判断
+			boolean continueWithPropertyPopulation = applyBeanPostProcessorsAfterInstantiation(beanName, bean);
+			if (!continueWithPropertyPopulation) {
+				return bean;
+			}
+
 			// 在设置 Bean 属性之前，允许 BeanPostProcessor 修改属性值
 			applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
 			// 给 Bean 填充属性
@@ -41,10 +53,47 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 注册实现了 DisposableBean 接口的 Bean 对象
 		registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
+		Object exposedObject = bean;
 		if (beanDefinition.isSingleton()) {
-			addSingleton(beanName, bean);
+			// 获取代理对象
+			exposedObject = getSingleton(beanName);
+			registerSingleton(beanName, exposedObject);
 		}
-		return bean;
+		return exposedObject;
+	}
+
+	/**
+	 * Bean 实例化后对于返回 false 的对象，不在执行后续设置 Bean 对象属性的操作
+	 *
+	 * @param beanName
+	 * @param bean
+	 * @return
+	 */
+	private boolean applyBeanPostProcessorsAfterInstantiation(String beanName, Object bean) {
+		boolean continueWithPropertyPopulation = true;
+		for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+			if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+				boolean result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessAfterInstantiation(bean, beanName);
+				if (!result) {
+					continueWithPropertyPopulation = false;
+					break;
+				}
+			}
+		}
+		return continueWithPropertyPopulation;
+	}
+
+	private Object getEarlyBeanReference(String beanName, BeanDefinition beanDefinition, Object bean) {
+		Object result = bean;
+		for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+			if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+				result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).getEarlyBeanReference(bean, beanName);
+				if (null != result) {
+					return result;
+				}
+			}
+		}
+		return result;
 	}
 
 	private void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {

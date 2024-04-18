@@ -117,7 +117,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		BeanDefinition beanDefinition = new BeanDefinition(clazz);
 		beanDefinition.setInitMethodName(bean.attributeValue("init-method"));
 		beanDefinition.setDestroyMethodName(bean.attributeValue("destroy-method"));
-		beanDefinition.setScope(bean.attributeValue("scope"));
+		String scope = bean.attributeValue("scope");
+		if (StrUtil.isNotEmpty(scope)) {
+			beanDefinition.setScope(scope);
+		}
 		for (Element property : bean.elements("property")) {
 			// 解析标签：property
 			String attrName = property.attributeValue("name");
